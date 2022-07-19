@@ -49,11 +49,11 @@ class Optimus_Logika:
                 self.targets = self.targets_ordered_by_distance(self.targets)
                 target_pos = self.targets[0]
                 screen_x, screen_y = self.get_screen_position(target_pos)
-                pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
+                # pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
 
-            pyautogui.press('1')
-            pyautogui.click()
-            pyautogui.press('1')
+            # pyautogui.press('1')
+            # pyautogui.click()
+            # pyautogui.press('1')
 #            pyautogui.press('2')
             sleep(1)
 #            pyautogui.press('2')   
@@ -61,34 +61,34 @@ class Optimus_Logika:
             # self.rakiety += 1
 
             end = time()
-            if (end - self.mojstart)>120:
-                    Nadaj.R_START = 1
-                    pyautogui.moveTo(1128,536)
-                    sleep(1)
-                    pyautogui.click()
-                    sleep(1)
-                    pyautogui.click(18,278)
-                    sleep(1)
-                    pyautogui.click(1323,688)
-                    sleep(15)
-                    Nadaj.R_END = 1
-                    pyautogui.click(1159,594)
-                    sleep(2)
-                    self.mojstart = time()
-
-            if (end - self.odswierzanieMapy)>20:
-                    Nadaj.MAP = 1
-                    pyautogui.moveTo(1128,536)
-                    sleep(1)
-                    pyautogui.click()
-                    sleep(1)
-                    pyautogui.click(18,278)
-                    sleep(1)
-                    self.odswierzanieMapy = time()
-                    BotState.KILLING = 1
-                    BotState.MOVING = 0
-                    BotState.NAMIERZANIE = 0
-                    self.namierzanie()
+            # if (end - self.mojstart)>120:
+            #         Nadaj.R_START = 1
+            #         pyautogui.moveTo(1128,536)
+            #         sleep(1)
+            #         pyautogui.click()
+            #         sleep(1)
+            #         pyautogui.click(18,278)
+            #         sleep(1)
+            #         pyautogui.click(1323,688)
+            #         sleep(15)
+            #         Nadaj.R_END = 1
+            #         pyautogui.click(1159,594)
+            #         sleep(2)
+            #         self.mojstart = time()
+            #
+            # if (end - self.odswierzanieMapy)>20:
+            #         Nadaj.MAP = 1
+            #         pyautogui.moveTo(1128,536)
+            #         sleep(1)
+            #         pyautogui.click()
+            #         sleep(1)
+            #         pyautogui.click(18,278)
+            #         sleep(1)
+            #         self.odswierzanieMapy = time()
+            #         BotState.KILLING = 1
+            #         BotState.MOVING = 0
+            #         BotState.NAMIERZANIE = 0
+            #         self.namierzanie()
 
             # if lasery == 60:
             #     self.lasery = 0
@@ -110,9 +110,9 @@ class Optimus_Logika:
             self.targets = self.targets_ordered_by_distance(self.targets)
             target_pos = self.targets[0]
             screen_x, screen_y = self.get_screen_position(target_pos)
-            pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
-            pyautogui.click()
-            pyautogui.press('1')
+            # pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
+            # pyautogui.click()
+            # pyautogui.press('1')
             BotState.KILLING = 1
             BotState.NAMIERZANIE = 0
             sleep(3)
@@ -134,7 +134,7 @@ class Optimus_Logika:
         if not self.targets:   
             elo = random.randint(1,30)
             #pyautogui.click(1242-elo,649-elo) # do slabej mapy
-            pyautogui.click(1278-elo,658-elo) # do silnej mayp
+            # pyautogui.click(1278-elo,658-elo) # do silnej mayp
             sleep(1)
         else:
             BotState.MOVING = 0
