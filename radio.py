@@ -1,7 +1,7 @@
 from threading import Thread, Lock
 import playsound
 from time import sleep
-
+import pyautogui
 
 
 class Nadaj:
@@ -10,8 +10,9 @@ class Nadaj:
     S_N = 0
     R_START = 0
     R_END = 0
-    MAP=0
+    MAP = 0
     INITIALIZING = 0
+    KRONZOWNIK = 0
 
     stopped = False
 class Odbiornik: 
@@ -32,8 +33,26 @@ class Odbiornik:
         
         # load the trained model    
 
+    def autopilot(self):
+        while Nadaj.KRONZOWNIK == 1:
+            # pyautogui.moveTo(1180,597)
+            # sleep(1)
+            # pyautogui.click()
+            # sleep(20)
+            # pyautogui.moveTo(1325,628)
+            # sleep(1)
+            # pyautogui.click()
+            # sleep(20)
+            # pyautogui.moveTo(1167,640)
+            # sleep(1)
+            # pyautogui.click()
+            # sleep(20)
+            # pyautogui.moveTo(1325,689)
+            # sleep(1)
+            # pyautogui.click()
+            # sleep(20)
+            pass
 
-    
 
     def update(self, screenshot):
         self.lock.acquire()
@@ -84,7 +103,12 @@ class Odbiornik:
             elif Nadaj.MAP == 1:
                 playsound.playsound('komendy/MAP.mp3')
                 Nadaj.MAP = 0
-                
+            
+            if Nadaj.KRONZOWNIK == 1:
+                self.autopilot()
+            
+
+
 
             
 

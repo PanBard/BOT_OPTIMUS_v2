@@ -4,6 +4,11 @@ from threading import Thread, Lock
 from pomocnikDetektora import Pomocnik
 
 
+class Kierownik:
+    SKRZYNKI = 0
+    MAPA = 0
+    POPRAWKA_MAPY = 0
+
 class Detektor:
     # threading properties
     stopped = True
@@ -12,6 +17,8 @@ class Detektor:
     # properties
     cascade = None
     screenshot = None
+    cel = "img/lo.jpg"
+    moc_wykrywania = 0.7
 
     def __init__(self):
         # create a thread lock object
@@ -37,15 +44,28 @@ class Detektor:
         while not self.stopped:
             if not self.screenshot is None:
 
-                # do object detection
-                rectangles = self.rectangles
-                pomoc = Pomocnik('lo.jpg')
-                points = pomoc.find(self.screenshot, 0.7, 'rectangles')
+                if Kierownik.SKRZYNKI == 1:
+                    self.cel = "img/lo.jpg"
+                    self.moc_wykrywania = 0.7
 
-                # lock the thread while updating the results
-                self.lock.acquire()
-                self.rectangles = pomoc.rectangles
-                self.lock.release()
+                if Kierownik.MAPA == 1:
+                    self.cel = "img/mapa.jpg"
+                    self.moc_wykrywania = 0.7
+
+                if Kierownik.POPRAWKA_MAPY == 1:
+                    self.cel = "img/poprawkaMapy.jpg"
+                    self.moc_wykrywania = 0.9
+                if Kierownik.SKRZYNKI == 1 or Kierownik.MAPA == 1 or Kierownik.POPRAWKA_MAPY == 1:
+                    # do object detection
+                    rectangles = self.rectangles
+                    pomoc = Pomocnik(self.cel)
+                    points = pomoc.find(self.screenshot, self.moc_wykrywania, 'rectangles')
+
+                    # lock the thread while updating the results
+                    self.lock.acquire()
+                    self.rectangles = pomoc.rectangles
+                    self.lock.release()
+
 
 
 

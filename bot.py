@@ -10,11 +10,15 @@ class BotState:
     NAMIERZANIE = 0
     MOVING = 1
     KILLING = 0
-    
+    SKRZYNKI = 1
+    MAPA = 0
+    POPRAWKA_MAPY = 0
 
 class Optimus_Logika:
     mojstart = time()
     odswierzanieMapy = time()
+    odswierzanieMapyDlaWszystkich = time()
+    end = time()
     # threading properties
     stopped = True
     lock = None
@@ -22,6 +26,8 @@ class Optimus_Logika:
     
     state = None
     targets = []
+    mapson = []
+    ikona_mapy = []
     window_offset = (0,0)
     window_w = 0
     window_h = 0
@@ -45,11 +51,14 @@ class Optimus_Logika:
         targety = len(self.targets)
 
         while targety > 0:
+            if self.stopped:
+                break
+
             if self.targets:
                 self.targets = self.targets_ordered_by_distance(self.targets)
                 target_pos = self.targets[0]
                 screen_x, screen_y = self.get_screen_position(target_pos)
-                # pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
+                # pyautogui.moveTo(x=screen_x , y=screen_y)
 
             # pyautogui.press('1')
             # pyautogui.click()
@@ -59,8 +68,8 @@ class Optimus_Logika:
 #            pyautogui.press('2')   
             # self.lasery += 1
             # self.rakiety += 1
-
-            end = time()
+            self.end = time()
+            # end = time()
             # if (end - self.mojstart)>120:
             #         Nadaj.R_START = 1
             #         pyautogui.moveTo(1128,536)
@@ -70,12 +79,12 @@ class Optimus_Logika:
             #         pyautogui.click(18,278)
             #         sleep(1)
             #         pyautogui.click(1323,688)
-            #         sleep(15)
+            #         sleep(1)
             #         Nadaj.R_END = 1
             #         pyautogui.click(1159,594)
-            #         sleep(2)
+            #         sleep(1)
             #         self.mojstart = time()
-            #
+
             # if (end - self.odswierzanieMapy)>20:
             #         Nadaj.MAP = 1
             #         pyautogui.moveTo(1128,536)
@@ -110,13 +119,24 @@ class Optimus_Logika:
             self.targets = self.targets_ordered_by_distance(self.targets)
             target_pos = self.targets[0]
             screen_x, screen_y = self.get_screen_position(target_pos)
-            # pyautogui.moveTo(x=screen_x + 40, y=screen_y-50)
+            # pyautogui.moveTo(x=screen_x , y=screen_y)
             # pyautogui.click()
             # pyautogui.press('1')
             BotState.KILLING = 1
             BotState.NAMIERZANIE = 0
             sleep(3)
         else: BotState.MOVING = 1
+        self.end = time()
+
+    def nadajnik(self):
+        while not self.targets:
+            szerokosc = random.randint(-70,70)
+            wysokosc = random.randint(-40,40)
+            #pyautogui.click(1242-elo,649-elo) # do slabej mapy
+            # pyautogui.click(1240-szerokosc,642-wysokosc) # do silnej mayp
+            if self.targets:
+                BotState.NAMIERZANIE = 1
+                Nadaj.KRONZOWNIK = 0
         
     def get_screen_position(self, pos):
         return (pos[0] + self.window_offset[0], pos[1] + self.window_offset[1])
@@ -129,22 +149,42 @@ class Optimus_Logika:
         targets.sort(key=pythagorean_distance)
         return targets
         
+    
 
     def move(self):
         if not self.targets:   
-            elo = random.randint(1,30)
-            #pyautogui.click(1242-elo,649-elo) # do slabej mapy
-            # pyautogui.click(1278-elo,658-elo) # do silnej mayp
-            sleep(1)
+            # szerokosc = random.randint(-70,70)
+            # wysokosc = random.randint(-40,40)
+            # #pyautogui.click(1242-elo,649-elo) # do slabej mapy
+            # pyautogui.click(1240-szerokosc,642-wysokosc) # do silnej mayp
+            # sleep(1)
+            Nadaj.KRONZOWNIK = 1
         else:
             BotState.MOVING = 0
             BotState.NAMIERZANIE = 1
-    
+        self.end = time()
     def update_targets(self, targets):
         #self.lock.acquire()
         self.targets = targets
         #self.lock.release()
     # threading methods
+
+    def update_mapsony(self, mapsony):
+        #self.lock.acquire()
+        self.mapson = mapsony
+        #self.lock.release()
+    # threading methods
+
+    def update_ikona_mapy(self, ikona):
+        # self.lock.acquire()
+        self.ikona_mapy = ikona
+        # self.lock.release()
+
+    # threading methods def update_mapsony(self, mapsony):
+    #         #self.lock.acquire()
+    #         self.mapson = mapsony
+    #         #self.lock.release()
+    #     # threading methods
 
     def start(self):
         self.stopped = False
@@ -158,6 +198,7 @@ class Optimus_Logika:
     # main logic controller
     def run(self):
         while not self.stopped:
+
             if BotState.NAMIERZANIE == 1:
                 #Nadaj.S_N = 1
                 self.namierzanie()
@@ -166,5 +207,39 @@ class Optimus_Logika:
                 self.kil_target()
             if BotState.MOVING == 1:
                 self.move()
-                #Nadaj.S_M = 1
-            
+                Nadaj.S_M = 1
+
+            if self.mapson:
+                target_pos = self.mapson[0]
+                screen_x, screen_y = self.get_screen_position(target_pos)
+                pyautogui.moveTo(x=screen_x - 70, y=screen_y)
+                BotState.MAPA = 0
+                BotState.SKRZYNKI = 1
+                print("jest mapa")
+
+            if self.ikona_mapy:
+                target_pos = self.ikona_mapy[0]
+                screen_x, screen_y = self.get_screen_position(target_pos)
+                pyautogui.moveTo(x=screen_x, y=screen_y)
+                pyautogui.click()
+                print("klik na ikone mapy")
+                BotState.POPRAWKA_MAPY = 0
+                BotState.SKRZYNKI = 1
+
+
+            if (self.end - self.odswierzanieMapyDlaWszystkich) > 5:
+                    Nadaj.MAP = 1
+                    BotState.SKRZYNKI = 0
+
+                    BotState.MAPA = 1
+                    sleep(2)
+                    if not self.mapson:
+                        BotState.MAPA = 0
+                        BotState.POPRAWKA_MAPY = 1
+
+                    self.odswierzanieMapyDlaWszystkich = time()
+                    BotState.KILLING = 1
+                    BotState.MOVING = 0
+                    BotState.NAMIERZANIE = 0
+                    self.namierzanie()
+                    print("minelo 5 sekund")

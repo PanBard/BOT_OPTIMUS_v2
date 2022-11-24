@@ -4,7 +4,7 @@ import numpy as np
 import os
 from time import time
 from windowcapture import WindowCapture
-from detektor import Detektor
+from detektor import Detektor, Kierownik
 from vision import Vision
 from bot import BotState, Optimus_Logika
 
@@ -32,8 +32,36 @@ while True:
         continue
     
     wykrywanie_obiektu.update(wincap.screenshot)
-    targets = vision.get_click_points(wykrywanie_obiektu.rectangles)
-    bot.update_targets(targets)
+    going = vision.get_click_points(wykrywanie_obiektu.rectangles)
+    bot.update_targets(going)
+    bot.update_mapsony(going)
+    bot.update_ikona_mapy(going)
+
+
+
+    if BotState.MAPA == 1:
+        Kierownik.SKRZYNKI = 0
+        Kierownik.MAPA = 1
+        Kierownik.POPRAWKA_MAPY = 0
+        mapsony = vision.get_click_points(wykrywanie_obiektu.rectangles)
+        bot.update_mapsony(mapsony)
+        print("MAPA")
+
+    if BotState.POPRAWKA_MAPY == 1:
+        Kierownik.SKRZYNKI = 0
+        Kierownik.MAPA = 0
+        Kierownik.POPRAWKA_MAPY = 1
+        ikona = vision.get_click_points(wykrywanie_obiektu.rectangles)
+        bot.update_ikona_mapy(ikona)
+        print("POPRAWKA_MAPY")
+
+    if BotState.SKRZYNKI == 1:
+        Kierownik.SKRZYNKI = 1
+        Kierownik.MAPA = 0
+        Kierownik.POPRAWKA_MAPY = 0
+        targets = vision.get_click_points(wykrywanie_obiektu.rectangles)
+        bot.update_targets(targets)
+        print("SKRZYNKI")
 
     if DEBUG:
         # # draw the detec111tion results onto the original image
